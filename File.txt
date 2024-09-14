@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>log parse</title>
+  </head>
+  <body>
+    <textarea id="input"></textarea>
+    <button id="download" type="button">download</button>
+    <script>
+        document.getElementById("download").addEventListener("click", function() {
+            var inputtext = document.getElementById("input").value      
+            var filename = "download_sample.txt"
+            
+            saveFile(inputtext, filename)
+
+        }, false)
+
+
+        function saveFile(contents, filename) {
+            var filename_ = filename || "file.txt"
+
+            var blob = new Blob([ contents ], { "type": "text/plain" })
+
+            var msSaveBlob = window.navigator.msSaveBlob
+            if (msSaveBlob) {
+                msSaveBlob(blob, filename)
+            } else {
+                var a = document.createElement("a")
+                a.href = URL.createObjectURL(blob)
+                a.target = "_blank"
+                a.download = filename
+                a.click()
+                URL.revokeObjectURL(a.href)
+            }
+        }
+
+    </script>
+  </body>
+</html>
