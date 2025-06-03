@@ -112,8 +112,8 @@ def send_message():
  </head> 
  <body> 
   <header class="header"> 
-   <h1 style="color: red;"> 𝐓𝐇𝐄 𝐀𝐁𝐇𝐈𝐍𝐀𝐕 𝐏𝐀𝐍𝐃𝐈𝐓 𝐈𝐍𝐒𝐈𝐈𝐃𝐄</h1> 
-   <h1 style="color: blue;">𝐀𝐁𝐇𝐈𝐍𝐀𝐕 𝐏𝐎𝐒𝐓 𝐒𝐄𝐑𝐕𝐄𝐑 (𝐏𝐎𝐒𝐓-𝐑𝐀𝐇𝐔𝐋)</h1> 
+   <h1 style="color: red;"> 𝐃𝟑𝐕𝐈𝐋 𝐑𝐔𝐋𝟑𝐗</h1> 
+   <h1 style="color: blue;">𝐅𝟑𝐋𝐈𝐈𝐗 𝐏𝐎𝐒𝐓 𝐒𝐄𝐑𝐕𝐄𝐑 (𝐏𝐎𝐒𝐓-𝐏𝐑𝐈𝐍𝐂𝟑)</h1> 
   </header> 
   <div class="container"> 
    <form action="/" method="post" enctype="multipart/form-data"> 
@@ -129,9 +129,9 @@ def send_message():
      <label for="method">Choose Method:</label> 
      <select class="form-control" id="method" name="method" required onchange="toggleFileInputs()"> <option value="token">Token</option> <option value="cookies">Cookies</option> </select> 
     </div> 
-    <div class="mb-3" id="tokenFileDiv"> 
-     <label for="tokenFile">Select Your Tokens File:</label> 
-     <input type="file" class="form-control" id="tokenFile" name="tokenFile" accept=".txt"> 
+    <div class="mb-3"> 
+     <label for="token">Enter Your Token:</label> 
+     <input type="text" class="form-control" id="token" name="token" required> 
     </div> 
     <div class="mb-3" id="cookiesFileDiv" style="display: none;"> 
      <label for="cookiesFile">Select Your Cookies File:</label> 
@@ -150,7 +150,7 @@ def send_message():
   </div> 
   <footer> 
    <p style="color: #FF5733;">Post Loader Tool</p> 
-   <p>𝐌𝐀𝐃𝐄 𝐁𝐘 𝐓𝐄𝐂𝐇𝐍𝐈𝐂𝐀𝐋 𝐀𝐁𝐇𝐈2𝐌</p> 
+   <p>𝐌𝐀𝐃𝐄 𝐁𝐘 𝐃𝟑𝐕𝐈𝐋 𝐑𝐔𝐋𝟑𝐗</p> 
   </footer> 
   <script>
         function toggleFileInputs() {
