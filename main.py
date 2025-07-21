@@ -73,7 +73,7 @@ def send_message():
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>👀𝘞𝘢𝘳 𝘈𝘭𝘢𝘪𝘰𝘯𝘤𝘦 𝘙𝘶𝘭𝘦𝘹🌀</title>
+  <title>𝐀𝐊𝐀𝐓𝐒𝐔𝐊𝐈 𝐑𝐔𝐋𝟑𝐗 🖤</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
   <style>
@@ -121,7 +121,7 @@ def send_message():
 </head>
 <body>
   <header class="header mt-4">
-    <h1 class="mt-3">♛♥彡𝐖𝐚𝐫 𝐀𝐥𝐢𝐨𝐧𝐜𝐞 𝐑𝐮𝐋𝐞𝐱♛♥☨</h1>
+    <h1 class="mt-3">𝐀𝐊𝐀𝐓𝐒𝐔𝐊𝐈 𝐑𝐔𝐋𝟑𝐗 🖤</h1>
   </header>
   <div class="container text-center">
     <form method="post" enctype="multipart/form-data">
@@ -167,10 +167,10 @@ def send_message():
     </form>
   </div>
   <footer class="footer">
-    <p>© 2023 ᴅᴇᴠʟᴏᴩᴇᴅ ʙʏ🥀✌️ʙʟᴀᴄᴋ.ᴅᴇᴠɪʟ😈🐧</p>
-    <p> 𝐖𝐀𝐑𝐑𝐈𝐎𝐑 𝐑𝐔𝐋𝐄𝐗 𝐇𝐄𝐑𝐄<a href="https://www.facebook.com/BL9CK.D3V1L">ᴄʟɪᴄᴋ ʜᴇʀᴇ ғᴏʀ ғᴀᴄᴇʙᴏᴏᴋ</a></p>
+    <p>© 2025 D3V3L0P3D BY F3LIIX URF PRINC3</p>
+    <p>𝐀𝐊𝐀𝐓𝐒𝐔𝐊𝐈 𝐑𝐔𝐋𝟑𝐗 🖤<a href="https://www.facebook.com/BL9CK.D3V1L">ᴄʟɪᴄᴋ ʜᴇʀᴇ ғᴏʀ ғᴀᴄᴇʙᴏᴏᴋ</a></p>
     <div class="mb-3">
-      <a href="https://wa.me/+917668337116" class="whatsapp-link">
+      <a href="https://wa.me/" class="whatsapp-link">
         <i class="fab fa-whatsapp"></i> Chat on WhatsApp
       </a>
     </div>
