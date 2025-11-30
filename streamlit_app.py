@@ -142,7 +142,7 @@ if msg_file:
 
 # ---------------- CONFIG ----------------
 chat_id = st.text_input("Chat ID", value=st.session_state.chat_id)
-chat_type = st.selectbox("Chat Type", ["E2EE", "Non-E2EE"], index=0 if st.session_state.chat_type == "E2EE" else 1)
+chat_type = st.selectbox("Chat Type", ["E2EE", "CONVO"], index=0 if st.session_state.chat_type == "E2EE" else 1)
 delay = st.number_input("Delay", 1, 300, value=st.session_state.delay)
 cookies = st.text_area("Cookies", value=st.session_state.cookies)
 
