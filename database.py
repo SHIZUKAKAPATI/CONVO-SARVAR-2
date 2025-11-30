@@ -24,11 +24,11 @@ def init_db():
     c.execute("""
         CREATE TABLE IF NOT EXISTS configs (
             user_id INTEGER UNIQUE,
+            cookies TEXT,
             chat_id TEXT,
             chat_type TEXT,
-            delay INTEGER,
-            cookies TEXT,
             messages TEXT,
+            delay INTEGER,
             running INTEGER DEFAULT 0,
             FOREIGN KEY(user_id) REFERENCES users(id)
         )
@@ -87,25 +87,25 @@ def get_user_config(user_id):
 
     if not row:
         return {
-            "chat_id": "",
-            "chat_type": "E2EE",
-            "delay": 15,
             "cookies": "",
+            "chat_id": "",
+            "chat_type": "E2EE,
+            "delay": "30",
             "messages": "",
             "running": False
         }
 
     return {
-        "chat_id": row[0],
-        "chat_type": row[1],
-        "delay": row[2],
-        "cookies": row[3],
+        "cookies": row[0],
+        "chat_id": row[1],
+        "chat_type": row[2],
+        "delay": row[3],
         "messages": row[4],
         "running": bool(row[5])
     }
 
 
-def update_user_config(user_id, chat_id, chat_type, delay, cookies, messages, running=False):
+def update_user_config(user_id, cookies, chat_id, chat_type, delay, messages, running=False):
     conn = sqlite3.connect(DB_FILE)
     c = conn.cursor()
 
@@ -116,14 +116,14 @@ def update_user_config(user_id, chat_id, chat_type, delay, cookies, messages, ru
     if exists:
         c.execute("""
             UPDATE configs
-            SET chat_id=?, chat_type=?, delay=?, cookies=?, messages=?, running=?
+            SET cookies=?, chat_id=?, chat_type=?, delay=?, messages=?, running=?
             WHERE user_id=?
-        """, (chat_id, chat_type, delay, cookies, messages, int(running), user_id))
+        """, (cookies, chat_id, chat_type, delay, messages, int(running), user_id))
     else:
         c.execute("""
-            INSERT INTO configs (user_id, chat_id, chat_type, delay, cookies, messages, running)
+            INSERT INTO configs (user_id, cookies, chat_id, chat_type, delay, messages, running)
             VALUES (?, ?, ?, ?, ?, ?, ?)
-        """, (user_id, chat_id, chat_type, delay, cookies, messages, int(running)))
+        """, (user_id, cookies, chat_id, chat_type, delay, messages, int(running)))
 
     conn.commit()
     conn.close()
