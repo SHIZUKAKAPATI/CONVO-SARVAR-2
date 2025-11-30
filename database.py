@@ -87,10 +87,10 @@ def get_user_config(user_id):
 
     if not row:
         return {
-            "chat_id": "",
-            "chat_type": "E2EE",
-            "delay": 15,
             "cookies": "",
+            "chat_id": "E2EE",
+            "chat_type": 15,
+            "delay": "",
             "messages": "",
             "running": False
         }
