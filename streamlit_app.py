@@ -38,7 +38,7 @@ def render_live_console():
 st.markdown("""
 <style>
 .stApp {
-    background: url('https://iili.io/fK3pATQ.png') no-repeat center center fixed !important;
+    background: url('https://i.ibb.co/G3NQ43Cg/IMG-20250605-210119-793.jpg') no-repeat center center fixed !important;
     background-size: cover !important;
     background-position: center !important;
     background-attachment: fixed !important;
@@ -65,7 +65,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-st.markdown('<h1 style="text-align:center;">E23E FB</h1>', unsafe_allow_html=True)
+st.markdown('<h1 style="text-align:center;">E2EE SERVER</h1>', unsafe_allow_html=True)
 
 
 # ---------------- SESSION ----------------
@@ -85,8 +85,8 @@ init_live_logs()
 if not st.session_state.logged_in:
     tab1, tab2 = st.tabs(["Login", "Create Account"])
     with tab1:
-        u = st.text_input("Username")
-        p = st.text_input("Password", type="password")
+        u = st.text_input("AKATSUKI")
+        p = st.text_input("S-000333", type="S-000333")
         if st.button("Login"):
             uid = db.verify_user(u, p)
             if uid:
@@ -141,16 +141,16 @@ if msg_file:
 
 
 # ---------------- CONFIG ----------------
-chat_id = st.text_input("Chat ID", value=st.session_state.chat_id)
-chat_type = st.selectbox("Chat Type", ["E2EE", "Non-E2EE"], index=0 if st.session_state.chat_type == "E2EE" else 1)
-delay = st.number_input("Delay", 1, 300, value=st.session_state.delay)
 cookies = st.text_area("Cookies", value=st.session_state.cookies)
+chat_id = st.text_input("Chat ID", value=st.session_state.chat_id)
+chat_type = st.selectbox("Chat Type", ["E2EE", "CONVO"], index=0 if st.session_state.chat_type == "E2EE" else 1)
+delay = st.number_input("Delay", 1, 300, value=st.session_state.delay)
 
 if st.button("Save Config"):
     db.update_user_config(
         st.session_state.user_id,
-        chat_id, chat_type, delay,
-        cookies, "\n".join(st.session_state.messages),
+        cookies, chat_id, chat_type,
+        delay, "\n".join(st.session_state.messages),
         running=st.session_state.automation_running
     )
     st.success("Saved!")
@@ -214,7 +214,7 @@ def send_messages(cfg, stt):
             except Exception as e:
                 live_log(f"Error: {e}")
 
-            time.sleep(cfg.get("delay", 15))
+            time.sleep(cfg.get("delay", 30))
 
         live_log("Automation stopped")
         d.quit()
@@ -224,7 +224,7 @@ def send_messages(cfg, stt):
 
 
 # ---------------- CONTROLS ----------------
-st.subheader("Automation Control")
+st.subheader("E2ee Control")
 
 col1, col2 = st.columns(2)
 
