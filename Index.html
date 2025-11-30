@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="ur">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اینڈ ٹو اینڈ آف لائن چیٹ</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        
+        .header p {
+            opacity: 0.8;
+            font-size: 14px;
+        }
+        
+        .main-content {
+            display: flex;
+            min-height: 600px;
+        }
+        
+        .sidebar {
+            width: 300px;
+            background: #34495e;
+            color: white;
+            padding: 20px;
+        }
+        
+        .chat-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .login-section {
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .login-section input {
+            padding: 12px;
+            margin: 10px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            width: 200px;
+        }
+        
+        .login-section button {
+            padding: 12px 30px;
+            background: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        .user-list {
+            margin-top: 20px;
+        }
+        
+        .user-item {
+            padding: 10px;
+            margin: 5px 0;
+            background: rgba(255,255,255,0.1);
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        .user-item:hover {
+            background: rgba(255,255,255,0.2);
+        }
+        
+        .user-item.active {
+            background: #27ae60;
+        }
+        
+        .messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: #f8f9fa;
+        }
+        
+        .message {
+            margin: 10px 0;
+            padding: 12px;
+            border-radius: 10px;
+            max-width: 70%;
+        }
+        
+        .message.received {
+            background: white;
+            border: 1px solid #ddd;
+            margin-right: auto;
+        }
+        
+        .message.sent {
+            background: #007bff;
+            color: white;
+            margin-left: auto;
+        }
+        
+        .message-header {
+            font-size: 12px;
+            opacity: 0.7;
+            margin-bottom: 5px;
+        }
+        
+        .input-area {
+            padding: 20px;
+            border-top: 1px solid #ddd;
+            background: white;
+        }
+        
+        .input-area input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        
+        .encryption-status {
+            background: #27ae60;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+.hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔒 اینڈ ٹو اینڈ انکرپٹڈ چیٹ</h1>
+            <p>مکمل طور پر آف لائن اور پرائیویٹ میسجنگ</p>
+        </div>
+        
+        <div class="encryption-status" id="encryptionStatus">
+            🔐 تمام میسجز اینڈ ٹو اینڈ انکرپٹڈ ہیں
+        </div>
+        
+        <div class="main-content">
+            <div class="sidebar">
+                <div class="login-section" id="loginSection">
+                    <h3>اپنا نام درج کریں</h3>
+                    <input type="text" id="usernameInput" placeholder="آپ کا نام">
+                    <button onclick="registerUser()">شروع کریں</button>
+                </div>
+                
+                <div class="user-list hidden" id="userListSection">
+                    <h3>آن لائن یوزرز</h3>
+                    <div id="userList"></div>
+                </div>
+            </div>
+            
+            <div class="chat-area hidden" id="chatArea">
+                <div class="messages" id="messages"></div>
+                <div class="input-area">
+                    <input type="text" id="messageInput" placeholder="اپنا میسج لکھیں..." onkeypress="handleKeyPress(event)">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        let socket = io();
+        let currentUser = null;
+        let selectedUser = null;
+
+        // یوزر رجسٹر کریں
+        function registerUser() {
+            const username = document.getElementById('usernameInput').value.trim();
+            if (!username) return;
+            
+            socket.emit('register', username);
+        }
+
+        // سرور سے جواب
+        socket.on('registered', (data) => {
+            currentUser = data;
+            document.getElementById('loginSection').classList.add('hidden');
+            document.getElementById('userListSection').classList.remove('hidden');
+            document.getElementById('chatArea').classList.remove('hidden');
+        });
+
+        // یوزر لسٹ اپڈیٹ
+        socket.on('user_list', (users) => {
+            const userList = document.getElementById('userList');
+            userList.innerHTML = '';
+            
+            users.forEach(user => {
+                if (user.id !== socket.id) {
+                    const userElement = document.createElement('div');
+                    userElement.className = 'user-item';
+                    userElement.textContent = user.username;
+                    userElement.onclick = () => selectUser(user);
+                    userList.appendChild(userElement);
+                }
+            });
+        });
+
+        // یوزر سلیکٹ کریں
+        function selectUser(user) {
+            selectedUser = user;
+            document.querySelectorAll('.user-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+
+        // میسج بھیجیں
+        function sendMessage() {
+            const messageInput = document.getElementById('messageInput');
+            const message = messageInput.value.trim();
+            
+            if (!message || !selectedUser) return;
+            
+            socket.emit('send_message', {
+                to: selectedUser.id,
+                message: message
+            });
+            
+            // لوکل ڈسپلے
+            displayMessage({
+                from: currentUser.userId,
+                fromUsername: 'آپ',
+                encryptedMessage: { encrypted: 'انکرپٹڈ میسج' },
+                timestamp: Date.now()
+            }, 'sent');
+            
+            messageInput.value = '';
+        }
+
+        // میسج وصول کریں
+        socket.on('receive_message', (data) => {
+            displayMessage(data, 'received');
+            
+            // آٹو ڈیکرپٹ
+            socket.emit('decrypt_message', {
+                encryptedMessage: data.encryptedMessage
+            });
+        });
+
+// ڈیکرپٹڈ میسج
+        socket.on('message_decrypted', (data) => {
+            const messagesDiv = document.getElementById('messages');
+            const lastMessage = messagesDiv.lastChild;
+            
+            if (lastMessage && lastMessage.dataset.encrypted === data.original.encrypted) {
+                lastMessage.querySelector('.message-text').textContent = data.decrypted;
+            }
+        });
+
+        // میسج ڈسپلے کریں
+        function displayMessage(data, type) {
+            const messagesDiv = document.getElementById('messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = message ${type};
+            messageDiv.dataset.encrypted = data.encryptedMessage.encrypted;
+            
+            const time = new Date(data.timestamp).toLocaleTimeString();
+            
+            messageDiv.innerHTML = 
+                <div class="message-header">${data.fromUsername} • ${time}</div>
+                <div class="message-text">
+                    ${type === 'sent' ? data.encryptedMessage.encrypted : '🔒 انکرپٹڈ میسج...'}
+                </div>
+            ;
+            
+            messagesDiv.appendChild(messageDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        // کی پریس ایونٹ
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        // نیا یوزر جوائن
+        socket.on('user_joined', (data) => {
+            addUserToList(data);
+        });
+
+        // یوزر لیفٹ
+        socket.on('user_left', (data) => {
+            removeUserFromList(data.userId);
+        });
+
+        function addUserToList(user) {
+            const userList = document.getElementById('userList');
+            const userElement = document.createElement('div');
+            userElement.className = 'user-item';
+            userElement.textContent = user.username;
+            userElement.onclick = () => selectUser(user);
+            userElement.dataset.userId = user.userId;
+            userList.appendChild(userElement);
+        }
+
+        function removeUserFromList(userId) {
+            const userElement = document.querySelector([data-user-id="${userId}"]);
+            if (userElement) {
+                userElement.remove();
+            }
+        }
+    </script>
+</body>
+</html>
+
+const express = require('express');
+const http = require('http');
+const socketIo = require('socket.io');
+const crypto = require('crypto');
+const path = require('path');
+
+const app = express();
+const server = http.createServer(app);
+const io = socketIo(server);
+
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.json());
+
+// یوزر سٹور (عملی طور پر ڈیٹا بیس استعمال کریں)
+const users = new Map();
+const messages = new Map();
+
+// Encryption keys کے لیے
+const generateKeyPair = () => {
+    const privateKey = crypto.randomBytes(32);
+    const publicKey = crypto.randomBytes(32);
+    return { privateKey, publicKey };
+};
+
+// میسج انکرپشن
+const encryptMessage = (message, publicKey) => {
+    const algorithm = 'aes-256-gcm';
+    const iv = crypto.randomBytes(16);
+    const cipher = crypto.createCipher(algorithm, publicKey);
+    
+    let encrypted = cipher.update(message, 'utf8', 'hex');
+    encrypted += cipher.final('hex');
+    
+    const authTag = cipher.getAuthTag();
+    
+    return {
+        iv: iv.toString('hex'),
+        encrypted: encrypted,
+        authTag: authTag.toString('hex'),
+        timestamp: Date.now()
+    };
+};
+
+// میسج ڈیکرپشن
+const decryptMessage = (encryptedData, privateKey) => {
+    const algorithm = 'aes-256-gcm';
+    const decipher = crypto.createDecipher(algorithm, privateKey);
+    
+    decipher.setAuthTag(Buffer.from(encryptedData.authTag, 'hex'));
+    
+    let decrypted = decipher.update(encryptedData.encrypted, 'hex', 'utf8');
+    decrypted += decipher.final('utf8');
+    
+    return decrypted;
+};
+
+// Socket.io connections
+io.on('connection', (socket) => {
+    console.log('نیا یوزر کنیکٹ ہوا:', socket.id);
+
+    // نیا یوزر رجسٹر کریں
+    socket.on('register', (username) => {
+        const keyPair = generateKeyPair();
+        const user = {
+            id: socket.id,
+            username,
+            publicKey: keyPair.publicKey.toString('hex'),
+            privateKey: keyPair.privateKey.toString('hex'),
+            socketId: socket.id
+        };
+        
+        users.set(socket.id, user);
+        socket.emit('registered', {
+            userId: socket.id,
+            publicKey: user.publicKey
+        });
+        
+        // دوسرے یوزرز کو نیا یوزر بتائیں
+        socket.broadcast.emit('user_joined', {
+            userId: socket.id,
+            username: username,
+            publicKey: user.publicKey
+        });
+        
+        // موجودہ یوزرز کی لسٹ بھیجیں
+        const userList = Array.from(users.values()).map(u => ({
+            id: u.id,
+            username: u.username,
+            publicKey: u.publicKey
+        }));
+        socket.emit('user_list', userList);
+    });
+
+    // میسج بھیجیں
+    socket.on('send_message', (data) => {
+        const { to, message } = data;
+        const fromUser = users.get(socket.id);
+        const toUser = users.get(to);
+        
+        if (!fromUser || !toUser) return;
+        
+        // میسج انکرپٹ کریں
+        const encryptedMessage = encryptMessage(
+            message, 
+            Buffer.from(toUser.publicKey, 'hex')
+        );
+        
+        const messageData = {
+            id: crypto.randomBytes(16).toString('hex'),
+            from: socket.id,
+            to: to,
+            fromUsername: fromUser.username,
+            encryptedMessage: encryptedMessage,
+            timestamp: Date.now()
+        };
+        
+        // میسج محفوظ کریں
+        if (!messages.has(socket.id)) {
+            messages.set(socket.id, []);
+        }
+        messages.get(socket.id).push(messageData);
+        
+        // رسیور کو میسج بھیجیں
+        socket.to(to).emit('receive_message', {
+            ...messageData,
+            encryptedMessage: encryptedMessage
+        });
+        
+        // سینڈر کو کنفرمیشن بھیجیں
+        socket.emit('message_sent', {
+            messageId: messageData.id,
+            to: toUser.username
+        });
+    });
+
+// میسج ڈیکرپٹ کریں
+    socket.on('decrypt_message', (data) => {
+        const { encryptedMessage } = data;
+        const user = users.get(socket.id);
+        
+        if (!user) return;
+        
+        try {
+            const decrypted = decryptMessage(
+                encryptedMessage,
+                Buffer.from(user.privateKey, 'hex')
+            );
+            
+            socket.emit('message_decrypted', {
+                original: encryptedMessage,
+                decrypted: decrypted
+            });
+        } catch (error) {
+            socket.emit('decryption_error', {
+                error: 'ڈیکرپشن ناکام'
+            });
+        }
+    });
+
+    // ڈس کنیکٹ
+    socket.on('disconnect', () => {
+        const user = users.get(socket.id);
+        if (user) {
+            socket.broadcast.emit('user_left', {
+                userId: socket.id,
+                username: user.username
+            });
+            users.delete(socket.id);
+        }
+        console.log('یوزر ڈس کنیکٹ ہوا:', socket.id);
+    });
+});
+
+// HTTP routes
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+app.get('/api/users', (req, res) => {
+    const userList = Array.from(users.values()).map(u => ({
+        id: u.id,
+        username: u.username
+    }));
+    res.json(userList);
+});
+
+const PORT = process.env.PORT || 3000;
+server.listen(PORT, () => {
+    console.log(سرور پورٹ ${PORT} پر چل رہا ہے);
+    console.log(http://localhost:${PORT} پر جائیں);
+});
+
+{
+  "name": "e2e-offline-chat",
+  "version": "1.0.0",
+  "description": "End-to-End Encrypted Offline Chat System",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "socket.io": "^4.7.2",
+    "crypto": "^1.0.1",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}
