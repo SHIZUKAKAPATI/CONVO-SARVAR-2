@@ -38,7 +38,7 @@ def render_live_console():
 st.markdown("""
 <style>
 .stApp {
-    background: url('https://iili.io/fK3pATQ.png') no-repeat center center fixed !important;
+    background: url('https://i.ibb.co/G3NQ43Cg/IMG-20250605-210119-793.jpg') no-repeat center center fixed !important;
     background-size: cover !important;
     background-position: center !important;
     background-attachment: fixed !important;
@@ -65,7 +65,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-st.markdown('<h1 style="text-align:center;">E23E FB</h1>', unsafe_allow_html=True)
+st.markdown('<h1 style="text-align:center;">E2EE SERVER</h1>', unsafe_allow_html=True)
 
 
 # ---------------- SESSION ----------------
