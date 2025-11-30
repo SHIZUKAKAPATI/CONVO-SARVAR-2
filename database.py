@@ -24,11 +24,11 @@ def init_db():
     c.execute("""
         CREATE TABLE IF NOT EXISTS configs (
             user_id INTEGER UNIQUE,
+            cookies TEXT,
             chat_id TEXT,
             chat_type TEXT,
-            delay INTEGER,
-            cookies TEXT,
             messages TEXT,
+            delay INTEGER,
             running INTEGER DEFAULT 0,
             FOREIGN KEY(user_id) REFERENCES users(id)
         )
