@@ -96,10 +96,10 @@ def get_user_config(user_id):
         }
 
     return {
-        "chat_id": row[0],
-        "chat_type": row[1],
-        "delay": row[2],
-        "cookies": row[3],
+        "cookies": row[0],
+        "chat_id": row[1],
+        "chat_type": row[2],
+        "delay": row[3],
         "messages": row[4],
         "running": bool(row[5])
     }
