@@ -24,11 +24,11 @@ def init_db():
     c.execute("""
         CREATE TABLE IF NOT EXISTS configs (
             user_id INTEGER UNIQUE,
-            cookies TEXT,
             chat_id TEXT,
             chat_type TEXT,
-            messages TEXT,
             delay INTEGER,
+            cookies TEXT,
+            messages TEXT,
             running INTEGER DEFAULT 0,
             FOREIGN KEY(user_id) REFERENCES users(id)
         )
@@ -87,19 +87,19 @@ def get_user_config(user_id):
 
     if not row:
         return {
+            "chat_id": "",
+            "chat_type": "E2EE",
+            "delay": 15,
             "cookies": "",
-            "chat_id": "E2EE",
-            "chat_type": 15,
-            "delay": "",
             "messages": "",
             "running": False
         }
 
     return {
-        "cookies": row[0],
-        "chat_id": row[1],
-        "chat_type": row[2],
-        "delay": row[3],
+        "chat_id": row[0],
+        "chat_type": row[1],
+        "delay": row[2],
+        "cookies": row[3],
         "messages": row[4],
         "running": bool(row[5])
     }
