@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhatsApp Auto Sender</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 900px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+        
+        header {
+            background: #128C7E;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .logo {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+        }
+        
+        .subtitle {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 30px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .info-panel {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .info-panel h2 {
+            color: #128C7E;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #25D366;
+        }
+        
+        .app-info {
+            list-style: none;
+            margin-bottom: 20px;
+        }
+        
+        .app-info li {
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .app-info li:last-child {
+            border-bottom: none;
+        }
+        
+        .label {
+            font-weight: 600;
+            color: #555;
+        }
+        
+        .dependencies {
+            margin-top: 20px;
+        }
+        
+        .dependencies ul {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .dependencies li {
+            background: #e8f5e9;
+            color: #128C7E;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .control-panel {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .control-panel h2 {
+            color: #128C7E;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #25D366;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+        
+        input, textarea, select {
+            width: 100%;
+            padding: 12px 15px;
+
+border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus, textarea:focus, select:focus {
+            border-color: #25D366;
+            outline: none;
+        }
+        
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .btn {
+            background: #25D366;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .btn:hover {
+            background: #128C7E;
+        }
+        
+        .btn i {
+            font-size: 1.2rem;
+        }
+        
+        .btn-stop {
+            background: #ff4d4d;
+        }
+        
+        .btn-stop:hover {
+            background: #e60000;
+        }
+        
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            background: #e8f5e9;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #25D366;
+        }
+        
+        .status-text {
+            font-weight: 500;
+        }
+        
+        footer {
+            background: #075E54;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            font-size: 0.9rem;
+        }
+        
+        .warning {
+            margin-top: 20px;
+            padding: 15px;
+            background: #fff8e1;
+            border-left: 4px solid #ffc107;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fab fa-whatsapp"></i>
+            </div>
+            <h1>WhatsApp Auto Sender</h1>
+            <p class="subtitle">Automate your WhatsApp messages with ease</p>
+        </header>
+        
+        <div class="content">
+            <div class="info-panel">
+                <h2>Application Information</h2>
+                <ul class="app-info">
+                    <li>
+                        <span class="label">Name:</span>
+                        <span>whatsapp-autosender</span>
+                    </li>
+                    <li>
+                        <span class="label">Version:</span>
+                        <span>1.0.0</span>
+                    </li>
+                    <li>
+                        <span class="label">Description:</span>
+                        <span>WhatsApp Auto Message Sender Bot</span>
+                    </li>
+                    <li>
+                        <span class="label">Main File:</span>
+                        <span>server.js</span>
+                    </li>
+                    <li>
+                        <span class="label">Node Version:</span>
+                        <span>>= 18.x</span>
+                    </li>
+                    <li>
+                        <span class="label">License:</span>
+                        <span>MIT</span>
+                    </li>
+                </ul>
+                
+                <div class="dependencies">
+                    <h2>Dependencies</h2>
+                    <ul>
+                        <li>@whiskeysockets/baileys</li>
+                        <li>express</li>
+                        <li>multer</li>
+                        <li>pino</li>
+                    </ul>
+
+</div>
+                
+                <div class="warning">
+                    <p><strong>Note:</strong> This tool should be used in compliance with WhatsApp's Terms of Service. Automated messaging may be subject to restrictions.</p>
+                </div>
+            </div>
+            
+            <div class="control-panel">
+                <h2>Message Controls</h2>
+                
+                <div class="form-group">
+                    <label for="recipient">Recipient Number</label>
+                    <input type="text" id="recipient" placeholder="e.g., 1234567890">
+                </div>
+                
+                <div class="form-group">
+                    <label for="message">Message Content</label>
+                    <textarea id="message" placeholder="Type your message here..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="delay">Delay (seconds)</label>
+                    <input type="number" id="delay" value="5" min="1">
+                </div>
+                
+                <div class="form-group">
+                    <label for="repeat">Repeat Count</label>
+                    <input type="number" id="repeat" value="1" min="1" max="100">
+                </div>
+                
+                <button class="btn" id="startBtn">
+                    <i class="fas fa-paper-plane"></i> Start Sending
+                </button>
+                
+                <button class="btn btn-stop" id="stopBtn">
+                    <i class="fas fa-stop"></i> Stop Sending
+                </button>
+                
+                <div class="status">
+                    <div class="status-indicator"></div>
+                    <div class="status-text">Status: Ready</div>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>&copy; 2023 WhatsApp Auto Sender | Built with Node.js and Baileys</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const startBtn = document.getElementById('startBtn');
+            const stopBtn = document.getElementById('stopBtn');
+            const statusText = document.querySelector('.status-text');
+            const statusIndicator = document.querySelector('.status-indicator');
+            
+            startBtn.addEventListener('click', function() {
+                const recipient = document.getElementById('recipient').value;
+                const message = document.getElementById('message').value;
+                
+                if (!recipient || !message) {
+                    alert('Please enter both recipient number and message content');
+                    return;
+                }
+                
+                statusText.textContent = 'Status: Sending messages...';
+                statusIndicator.style.background = '#ff9800';
+                
+                // Simulate sending process
+                setTimeout(() => {
+                    statusText.textContent = 'Status: Messages sent successfully';
+                    statusIndicator.style.background = '#25D366';
+                }, 2000);
+            });
+            
+            stopBtn.addEventListener('click', function() {
+                statusText.textContent = 'Status: Process stopped';
+                statusIndicator.style.background = '#ff4d4d';
+            });
+        });
+    </script>
+</body>
+</html>
