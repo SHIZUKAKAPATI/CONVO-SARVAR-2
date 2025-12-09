@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facebook Bot Panel</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            opacity: 0.8;
+            font-size: 1.1em;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .status-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 4px solid #007bff;
+        }
+        
+        .status-online {
+            border-left-color: #28a745;
+        }
+        
+        .status-offline {
+            border-left-color: #dc3545;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        input, button {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+        
+        .btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+        
+        .btn:hover {
+            background: #0056b3;
+            transform: translateY(-2px);
+        }
+        
+        .btn-stop {
+            background: #dc3545;
+        }
+        
+        .btn-stop:hover {
+            background: #c82333;
+        }
+        
+        .btn-clear {
+            background: #6c757d;
+        }
+        
+        .btn-clear:hover {
+            background: #545b62;
+        }
+        
+        .button-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .stat-value {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #007bff;
+        }
+        
+        .stat-label {
+            font-size: 0.9em;
+            color: #6c757d;
+        }
+        
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            display: none;
+        }
+        
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .upload-area {
+            border: 2px dashed #007bff;
+            border-radius: 8px;
+            padding: 30px;
+            text-align: center;
+            margin: 10px 0;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .upload-area:hover {
+            background: #f8f9fa;
+        }
+        
+        .upload-area.dragover {
+            background: #e3f2fd;
+            border-color: #2196f3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 Facebook Bot</h1>
+            <p>24/7 Automated Bot with Web Panel</p>
+        </div>
+        
+        <div class="content">
+            <div id="statusCard" class="status-card">
+                <h3>Bot Status: <span id="statusText">Checking...</span></h3>
+                <div id="statusDetails"></div>
+            </div>
+            
+            <div id="alert" class="alert"></div>
+            
+            <div id="configSection">
+                <div class="form-group">
+                    <label for="ownerUID">Admin UID:</label>
+                    <input type="text" id="ownerUID" placeholder="100021841126660" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>AppState File:</label>
+                    <div class="upload-area" id="uploadArea">
+                        <p>📁 Click to upload or drag appstate.txt file here</p>
+                        <input type="file" id="appstateFile" accept=".txt,.json" style="display: none;">
+                    </div>
+                    <small>File: <span id="fileName">No file selected</span></small>
+                </div>
+                
+                <button class="btn" onclick="startBot()" id="startBtn">🚀 Start Bot</button>
+                
+                <div class="button-group">
+                    <button class="btn btn-stop" onclick="stopBot()" id="stopBtn">🛑 Stop Bot</button>
+                    <button class="btn btn-clear" onclick="clearConfig()">🧹 Clear Config</button>
+                </div>
+            </div>
+            
+            <div class="stats" id="statsSection" style="display: none;">
+                <div class="stat-card">
+                    <div class="stat-value" id="uptime">0h 0m</div>
+                    <div class="stat-label">Uptime</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="memory">0 MB</div>
+                    <div class="stat-label">Memory</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="restarts">0</div>
+                    <div class="stat-label">Restarts</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="apiStatus">No</div>
+                    <div class="stat-label">API Connected</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentStatus = false;
+        
+        // DOM Elements
+        const statusCard = document.getElementById('statusCard');
+        const statusText = document.getElementById('statusText');
+        const statusDetails = document.getElementById('statusDetails');
+        const alertDiv = document.getElementById('alert');
+        const statsSection = document.getElementById('statsSection');
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('appstateFile');
+        const fileName = document.getElementById('fileName');
+        
+        // Show alert
+        function showAlert(message, type) {
+            alertDiv.textContent = message;
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.style.display = 'block';
+            setTimeout(() => {
+                alertDiv.style.display = 'none';
+            }, 5000);
+        }
+        
+        // Update status
+        function updateStatus(data) {
+            currentStatus = data.running;
+            
+            if (data.running) {
+                statusText.textContent = '🟢 ONLINE';
+                statusCard.classList.add('status-online');
+                statusCard.classList.remove('status-offline');
+                statusDetails.innerHTML = `
+                    <p>✅ Bot is running successfully</p>
+                    <p>👤 Admin UID: ${data.config.ownerUID}</p>
+                    <p>🕒 Started: ${new Date(data.config.lastStarted).toLocaleString()}</p>
+                `;
+                statsSection.style.display = 'grid';
+            } else {
+                statusText.textContent = '🔴 OFFLINE';
+                statusCard.classList.add('status-offline');
+                statusCard.classList.remove('status-online');
+                statusDetails.innerHTML = '<p>❌ Bot is currently stopped</p>';
+                statsSection.style.display = 'none';
+            }
+            
+            // Update stats
+            document.getElementById('uptime').textContent = 
+                `${Math.floor(data.memory.uptime/3600)}h ${Math.floor((data.memory.uptime%3600)/60)}m`;
+            document.getElementById('memory').textContent = Math.round(data.memory.usage) + ' MB';
+            document.getElementById('restarts').textContent = data.stats.restarts;
+            document.getElementById('apiStatus').textContent = data.stats.hasApi ? 'Yes' : 'No';
+        }
+        
+        // Check status periodically
+        async function checkStatus() {
+            try {
+                const response = await fetch('/api/status');
+                const data = await response.json();
+                updateStatus(data);
+            } catch (error) {
+                console.error('Status check failed:', error);
+            }
+        }
+        
+        // Start bot
+        async function startBot() {
+            const ownerUID = document.getElementById('ownerUID').value.trim();
+            const file = fileInput.files[0];
+            
+            if (!ownerUID) {
+                showAlert('❌ Please enter Admin UID', 'error');
+                return;
+            }
+            
+            if (!file) {
+                showAlert('❌ Please upload appstate file', 'error');
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append('ownerUID', ownerUID);
+            formData.append('appstate', file);
+            
+            try {
+                const response = await fetch('/api/start', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showAlert(result.message, 'success');
+                    checkStatus();
+                } else {
+                    showAlert(result.message, 'error');
+                }
+            } catch (error) {
+                showAlert('❌ Failed to start bot: ' + error.message, 'error');
+            }
+        }
+        
+        // Stop bot
+        async function stopBot() {
+            try {
+                const response = await fetch('/api/stop', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const result = await response.json();
+                showAlert(result.message, result.success ? 'success' : 'error');
+                checkStatus();
+            } catch (error) {
+                showAlert('❌ Failed to stop bot: ' + error.message, 'error');
+            }
+        }
+        
+        // Clear config
+        async function clearConfig() {
+            if (!confirm('Are you sure you want to clear all configuration?')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/clear', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const result = await response.json();
+                showAlert(result.message, result.success ? 'success' : 'error');
+                
+                if (result.success) {
+                    fileInput.value = '';
+                    fileName.textContent = 'No file selected';
+                    document.getElementById('ownerUID').value = '';
+                }
+                
+                checkStatus();
+            } catch (error) {
+                showAlert('❌ Failed to clear config: ' + error.message, 'error');
+            }
+        }
+        
+        // File upload handling
+        uploadArea.addEventListener('click', () => fileInput.click());
+        
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+        
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+        
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            fileInput.files = e.dataTransfer.files;
+            handleFileSelect();
+        });
+        
+        fileInput.addEventListener('change', handleFileSelect);
+        
+        function handleFileSelect() {
+            if (fileInput.files.length > 0) {
+                fileName.textContent = fileInput.files[0].name;
+            } else {
+                fileName.textContent = 'No file selected';
+            }
+        }
+        
+        // Initial setup
+        checkStatus();
+        setInterval(checkStatus, 5000); // Check every 5 seconds
+    </script>
+</body>
+</html>
