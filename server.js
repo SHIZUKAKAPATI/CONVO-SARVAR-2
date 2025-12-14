@@ -1,6 +1,3 @@
-// save as server.js
-// npm install express ws axios fca-mafiya uuid
- 
 const fs = require('fs');
 const express = require('express');
 const wiegine = require('fca-mafiya');
