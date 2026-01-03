@@ -1,1 +1,2 @@
-npm install express ws multer fs-extra @xaviabot/fca-unofficial
+selenium
+streamlit
