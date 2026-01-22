@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Messenger Automation Tool</title>
+    <style>
+        body {
+            background-color: #0f172a;
+            color: #e2e8f0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background-color: #1e293b;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            width: 100%;
+            max-width: 450px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #38bdf8;
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #94a3b8;
+        }
+
+        textarea, input[type="text"], input[type="number"], input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #334155;
+            background-color: #0f172a;
+            color: #fff;
+            border-radius: 6px;
+            box-sizing: border-box;
+        }
+
+        textarea {
+            height: 80px;
+            resize: vertical;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #0ea5e9;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0284c7;
+        }
+
+        .stop-btn {
+            display: block;
+            text-align: center;
+            margin-top: 15px;
+            color: #ef4444;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .stop-btn:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Messenger Bot</h2>
+
+    <form method="POST" enctype="multipart/form-data">
+        <label>Facebook Cookies (JSON format)</label>
+        <textarea name="cookies" placeholder="Paste cookies here..." required></textarea>
+
+        <label>Target UID</label>
+        <input type="text" name="uid" placeholder="e.g. 1000482..." required>
+
+        <label>Messages File (.txt)</label>
+        <input type="file" name="messages" required>
+
+        <label>Speed (delay in seconds)</label>
+        <input type="number" name="speed" value="10">
+
+        <label>Haters Name (optional)</label>
+        <input type="text" name="haters" placeholder="Target nickname">
+
+        <button type="submit">Start Automation</button>
+    </form>
+
+    <a href="/stop" class="stop-btn">Stop Bot Instance</a>
+</div>
+
+</body>
+</html>
